@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ExpensesService } from './expenses.service.js';
 import { CreateExpenseDto } from './dto/create-expense.dto.js';
@@ -26,18 +28,20 @@ export class ExpensesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    //тут нужна проверка на то, что id - это число, иначе будет ошибка
-    return this.expensesService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.expensesService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExpenseDto: UpdateExpenseDto) {
-    return this.expensesService.update(+id, updateExpenseDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateExpenseDto: UpdateExpenseDto,
+  ) {
+    return this.expensesService.update(id, updateExpenseDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.expensesService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.expensesService.remove(id);
   }
 }
